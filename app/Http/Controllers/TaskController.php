@@ -15,7 +15,10 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::query()->orderByDesc('created_at')->get();
+        $tasks = Task::query()
+            ->with('steps', 'folder.shared')
+            ->orderByDesc('created_at')
+            ->get();
 
         return response()->json($tasks, 200);
     }

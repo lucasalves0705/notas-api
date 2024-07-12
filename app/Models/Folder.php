@@ -6,25 +6,17 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Task extends Model
+class Folder extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
+
     protected $fillable = [
         'user_id',
-        'folder_id',
         'title',
-        'description',
-        'deadline',
-        'important',
-    ];
-
-    protected $casts = [
-        'important' => 'boolean',
-        'deadline' => 'datetime',
+        'color',
     ];
 
     public function user(): BelongsTo
@@ -32,14 +24,8 @@ class Task extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function steps(): HasMany
+    public function shared(): BelongsToMany
     {
-        return $this->hasMany(Step::class);
-    }
-
-    public function folder(): BelongsTo
-    {
-        return $this->belongsTo(Folder::class);
+        return $this->belongsToMany(User::class, 'share', 'folder_id', 'user_id');
     }
 }
-

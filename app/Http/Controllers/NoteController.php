@@ -14,7 +14,10 @@ class NoteController extends Controller
      */
     public function index()
     {
-        $notes = Note::query()->orderByDesc('created_at', 'desc')->get();
+        $notes = Note::query()
+            ->with('folder.shared')
+            ->orderByDesc('created_at')
+            ->get();
 
         return response()->json($notes, 200);
     }
