@@ -26,12 +26,16 @@ class TaskController extends Controller
         Validator::make($request->all(), [
             'title' => ['required'],
             'description' => ['required'],
-            'deadline' => ['nullable', 'date:Y-m-d']
+            'deadline' => ['nullable', 'date:Y-m-d'],
+            'steps' => ['required', 'array'],
         ])->validate();
 
         $task = new Task($request->all());
         $task->user_id = Auth::id();
         $task->save();
+
+        $task->steps()->createMany($request->steps);
+
         $task->refresh();
 
         return response()->json($task, 201);
