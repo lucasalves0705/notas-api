@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\NoteController;
+use App\Http\Controllers\TaskController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -22,10 +24,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('/note', \App\Http\Controllers\NoteController::class);
-    Route::apiresource('/task', \App\Http\Controllers\TaskController::class);
-    Route::post('/task/finished/{task}', [\App\Http\Controllers\TaskController::class, 'finished']);
-    Route::post('/task/unfinished/{task}', [\App\Http\Controllers\TaskController::class, 'unfinished']);
+    Route::apiResource('/note', NoteController::class)
+        ->names('note');
+    Route::post('/note/{note}/toggle-important', [NoteController::class, 'toggleImportant'])
+        ->name('note.toggle-important');
+
+    Route::apiresource('/task', TaskController::class);
+    Route::post('/task/{task}/toggle-important', [TaskController::class, 'toggleImportant'])
+        ->name('task.toggle-important');
 });
 
 Route::post('/sanctum/token', function (Request $request) {

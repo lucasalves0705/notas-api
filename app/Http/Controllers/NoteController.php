@@ -3,16 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class NoteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): JsonResponse
     {
         $notes = Note::query()
             ->with('folder.shared')
@@ -22,10 +20,7 @@ class NoteController extends Controller
         return response()->json($notes, 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
 
         Validator::make($request->all(), [
@@ -41,31 +36,28 @@ class NoteController extends Controller
         return response()->json($note, 200);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Note $note)
+    public function show(Note $note): JsonResponse
     {
         $note = Note::query()->where('id', $note)->get();
 
         return response()->json($note, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Note $note)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Note $note)
+    public function destroy(Note $note): JsonResponse
     {
+//        dd($note);
         $note->delete();
-
         return response()->json(null, 204);
+    }
+
+    public function toggleImportant(Note $note): JsonResponse
+    {
+        $success = $note->update(['important' => !$note->important]);
+        return response()->json($success);
     }
 }
