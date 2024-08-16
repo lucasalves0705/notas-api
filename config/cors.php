@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['http://felipe-3583:5174', 'http://notedash.tech'],
 
     'allowed_origins_patterns' => [],
 
