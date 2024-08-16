@@ -23,12 +23,7 @@ class TaskController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        Validator::make($request->all(), [
-            'title' => ['required'],
-            'description' => ['required'],
-            'deadline' => ['nullable', 'date:Y-m-d'],
-            'steps' => ['required', 'array'],
-        ])->validate();
+        $this->validator($request);
 
         $task = new Task($request->all());
         $task->user_id = Auth::id();
@@ -52,11 +47,7 @@ class TaskController extends Controller
             throw new UnauthorizedException();
         }
 
-        Validator::make($request->all(), [
-            'name' => ['required'],
-            'description' => ['required'],
-            'date' => ['nullable', 'date:Y-m-d']
-        ])->validate();
+        $this->validator($request);
 
         $updated = $task->update($request->all());
 
@@ -74,5 +65,16 @@ class TaskController extends Controller
     {
         $success = $task->update(['important' => !$task->important]);
         return response()->json($success);
+    }
+
+
+    private function validator(Request $request): void
+    {
+        Validator::make($request->all(), [
+            'title' => ['required'],
+            'description' => ['required'],
+            'deadline' => ['nullable', 'date:Y-m-d'],
+            'steps' => ['required', 'array'],
+        ])->validate();
     }
 }

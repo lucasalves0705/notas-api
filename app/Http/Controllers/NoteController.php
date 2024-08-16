@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\UnauthorizedException;
 
 class NoteController extends Controller
 {
@@ -22,11 +23,7 @@ class NoteController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-
-        Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-        ])->validated();
+        $this->validator($request);
 
         $note = new Note($request->all());
         $note->user_id = Auth::id();
@@ -45,7 +42,15 @@ class NoteController extends Controller
 
     public function update(Request $request, Note $note)
     {
-        //
+        if(Auth::id() !== $note->user_id) {
+            throw new UnauthorizedException();
+        }
+
+        $this->validator($request);
+
+        $updated = $note->update($request->all());
+
+        return response()->json($updated, 201);
     }
 
     public function destroy(Note $note): JsonResponse
@@ -59,5 +64,13 @@ class NoteController extends Controller
     {
         $success = $note->update(['important' => !$note->important]);
         return response()->json($success);
+    }
+
+    private function validator(Request $request): void
+    {
+        Validator::make($request->all(), [
+            'name' => 'required',
+            'description' => 'required',
+        ])->validated();
     }
 }
