@@ -19,6 +19,10 @@ use Illuminate\Validation\ValidationException;
 |
 */
 
+Route::get('/version', function () {
+    return response()->json(\Illuminate\Support\Facades\App::version());
+});
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
