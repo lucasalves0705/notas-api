@@ -46,7 +46,7 @@ class NoteController extends Controller
         return response()->json($note, 200);
     }
 
-    public function update(Request $request, Note $note)
+    public function update(Request $request, Note $note): JsonResponse
     {
         if(Auth::id() !== $note->user_id) {
             throw new UnauthorizedException();

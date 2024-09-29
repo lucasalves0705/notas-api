@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class Share extends Pivot
@@ -11,12 +12,12 @@ class Share extends Pivot
         'user_id',
     ];
 
-    public function folder()
+    public function folder(): BelongsTo
     {
         return $this->belongsTo(Folder::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
