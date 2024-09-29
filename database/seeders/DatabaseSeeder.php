@@ -6,7 +6,6 @@ namespace Database\Seeders;
 use App\Models\Folder;
 use App\Models\Note;
 use App\Models\Record;
-use App\Models\Share;
 use App\Models\Step;
 use App\Models\Task;
 use App\Models\User;
@@ -42,16 +41,16 @@ class DatabaseSeeder extends Seeder
                         ->withFolder($folder)
                         ->create();
 
+                    $taskFactory = Task::factory()->has(
+                        Step::factory()->count(
+                            fake()->numberBetween(1, 5)
+                        )
+                    );
+
                     Record::factory()
                         ->recycle($user)
                         ->count(fake()->numberBetween(1, 5))
-                        ->hasRecordable(
-                            Task::factory()->has(
-                                Step::factory()->count(
-                                    fake()->numberBetween(1, 5)
-                                )
-                            )
-                        )
+                        ->hasRecordable($taskFactory)
                         ->withFolder($folder)
                         ->create();
                 });

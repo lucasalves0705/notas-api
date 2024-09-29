@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\NoteResource;
 use App\Models\Note;
 use App\Repositories\NoteRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\UnauthorizedException;
@@ -13,24 +15,19 @@ use Illuminate\Validation\UnauthorizedException;
 class NoteController extends Controller
 {
     public function __construct(
-        private NoteRepository $noteRepository
+        private readonly NoteRepository $noteRepository
     )
     {
     }
 
-    public function index(): JsonResponse
+    public function index(): AnonymousResourceCollection
     {
-//        $notes = Note::query()
-//            ->with('folder.shared')
-//            ->orderByDesc('created_at')
-//            ->get();
-
         $notes = $this->noteRepository->all();
 
-        return response()->json($notes, 200);
+        return NoteResource::collection($notes);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(Request $request): NoteResource
     {
         $this->validator($request);
 
@@ -39,7 +36,7 @@ class NoteController extends Controller
         $note->save();
         $note->refresh();
 
-        return response()->json($note, 200);
+        return new NoteResource($note);
     }
 
     public function show(Note $note): JsonResponse

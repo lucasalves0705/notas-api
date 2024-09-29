@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/notes', NoteController::class)
         ->names('notes');
 
@@ -38,7 +38,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
     Route::post('/tasks/{task}/toggle-important', [TaskController::class, 'toggleImportant'])
         ->name('tasks.toggle-important');
-//});
+});
 
 Route::post('/sanctum/token', function (Request $request) {
     $request->validate([
