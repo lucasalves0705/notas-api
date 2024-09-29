@@ -8,8 +8,14 @@ use Illuminate\Support\Collection;
 
 class NoteRepository
 {
+    public function __construct(
+        private readonly RecordRepository $recordRepository,
+    )
+    {
+    }
+
     /**
-     * Obtém todas as notas.
+     * Obtém todas as notas do usuário logado.
      */
     public function all(): Collection
     {
@@ -24,5 +30,26 @@ class NoteRepository
             })
             ->orderByDesc('created_at')
             ->get();
+    }
+
+    /**
+     * Cria um novo registro de nota.
+     */
+    public function store(array $data): Note
+    {
+        $note = new Note([
+            'content' => $data['content'],
+        ]);
+        $note->save();
+
+        $this->recordRepository->store($data, $note);
+
+        $note->load([
+            'record',
+            'record.user',
+            'record.folder',
+        ]);
+
+        return $note;
     }
 }

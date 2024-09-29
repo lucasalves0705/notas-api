@@ -12,7 +12,6 @@ class Note extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
     protected $fillable = [
-        'record_id',
         'title',
         'content',
     ];

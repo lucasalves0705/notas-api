@@ -18,6 +18,8 @@ class Record extends Model
         'folder_id',
         'title',
         'important',
+        'recordable_id',
+        'recordable_type',
     ];
 
     protected $casts = [
