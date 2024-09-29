@@ -52,4 +52,21 @@ class NoteRepository
 
         return $note;
     }
+
+    public function find(string|int $id): ?Note
+    {
+        /** @var Note $note */
+        $note = Note::query()
+            ->with([
+                'record',
+                'record.user',
+                'record.folder',
+            ])
+            ->whereHas('record', function (Builder $query) {
+                $query->where('user_id', auth()->id());
+            })
+            ->find($id);
+
+        return $note;
+    }
 }

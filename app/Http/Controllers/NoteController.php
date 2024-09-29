@@ -34,11 +34,15 @@ class NoteController extends Controller
         return (new NoteResource($note))->response()->setStatusCode(201);
     }
 
-    public function show(Note $note): JsonResponse
+    public function show($note): NoteResource|JsonResponse
     {
-        $note = Note::query()->where('id', $note)->get();
+        $note = $this->noteRepository->find($note);
 
-        return response()->json($note, 200);
+        if ($note) {
+            return new NoteResource($note);
+        }
+
+        return response()->json($note, 404);
     }
 
     public function update(Request $request, Note $note): JsonResponse
