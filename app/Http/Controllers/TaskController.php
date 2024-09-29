@@ -14,7 +14,12 @@ class TaskController extends Controller
     public function index(): JsonResponse
     {
         $tasks = Task::query()
-            ->with('steps', 'folder.shared')
+            ->with([
+                'steps',
+                'record',
+                'record.user',
+                'record.folder.shared'
+            ])
             ->orderByDesc('created_at')
             ->get();
 

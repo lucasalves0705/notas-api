@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note;
+use App\Repositories\NoteRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,12 +12,20 @@ use Illuminate\Validation\UnauthorizedException;
 
 class NoteController extends Controller
 {
+    public function __construct(
+        private NoteRepository $noteRepository
+    )
+    {
+    }
+
     public function index(): JsonResponse
     {
-        $notes = Note::query()
-            ->with('folder.shared')
-            ->orderByDesc('created_at')
-            ->get();
+//        $notes = Note::query()
+//            ->with('folder.shared')
+//            ->orderByDesc('created_at')
+//            ->get();
+
+        $notes = $this->noteRepository->all();
 
         return response()->json($notes, 200);
     }

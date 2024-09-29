@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notes', function (Blueprint $table) {
+        Schema::create('records', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->text('content');
+            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignUuid('folder_id')->nullable()->constrained('folders')->cascadeOnDelete();
+            $table->nullableUuidMorphs('recordable');
+            $table->string('title')->nullable();
+            $table->boolean('important')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notes');
+        Schema::dropIfExists('records');
     }
 };

@@ -20,23 +20,25 @@ use Illuminate\Validation\ValidationException;
 */
 
 Route::get('/version', function () {
-    return response()->json(\Illuminate\Support\Facades\App::version());
+    return response()->json(\Illuminate\Support\Facades\App::version().'FINAL2');
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('/note', NoteController::class)
-        ->names('note');
+//Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('/notes', NoteController::class)
+        ->names('notes');
+
     Route::post('/note/{note}/toggle-important', [NoteController::class, 'toggleImportant'])
         ->name('note.toggle-important');
 
-    Route::apiresource('/task', TaskController::class);
-    Route::post('/task/{task}/toggle-important', [TaskController::class, 'toggleImportant'])
-        ->name('task.toggle-important');
-});
+    Route::apiresource('/tasks', TaskController::class);
+
+    Route::post('/tasks/{task}/toggle-important', [TaskController::class, 'toggleImportant'])
+        ->name('tasks.toggle-important');
+//});
 
 Route::post('/sanctum/token', function (Request $request) {
     $request->validate([
